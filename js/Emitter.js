@@ -34,9 +34,8 @@
         emit: function () {
             var position = this.randomPosition();
             var velocity = this.randomVelocity();
-            var number   = ((Math.random() * 9) | 0) + 1;
 
-            var box = new Box(position, velocity, number);
+            var box = new Box(position, velocity);
 
             var scope = this;
             box.addEventListener('onBottom', function (evt) {
