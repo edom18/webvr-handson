@@ -73,7 +73,22 @@
      */
     function setupObjects() {
         emitter = new Emitter(scene);
+    }
 
+    /**
+     * カーソルの生成
+     */
+    function setupCursor() {
+        var s = 0.3;
+        var geo = new THREE.PlaneGeometry(s, s);
+        var mat = new THREE.MeshBasicMaterial({
+            map: new THREE.TextureLoader().load('img/cursor.png'),
+            transparent: true
+        });
+        var mesh = new THREE.Mesh(geo, mat);
+        mesh.name = 'cursor';
+        mesh.position.z = -5;
+        camera.add(mesh);
     }
 
     /**
@@ -81,18 +96,57 @@
      */
     function setupSkybox() {
         var texture = new THREE.TextureLoader().load('img/background.jpg');
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(2, 2);
-        var skyboxGeo = new THREE.SphereGeometry(100, 32, 32);
-        var skyboxMat = new THREE.MeshBasicMaterial({
-            side: THREE.BackSide,
-            map: texture
+
+        var s = 1000;
+        var skyboxGeo = new THREE.BoxGeometry(s, s, s);
+        var materialArray = [];
+        var mat = new THREE.MeshBasicMaterial({
+            map: texture,
+            side: THREE.BackSide
         });
-        var skybox = new THREE.Mesh(skyboxGeo, skyboxMat);
+        for (var i = 0; i < 6; i++) {
+            materialArray.push(mat);
+        }
+        var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
+        var skybox = new THREE.Mesh(skyboxGeo, skyMaterial);
         skybox.name = 'skybox';
         scene.add(skybox);
+
+        // texture.wrapS = THREE.RepeatWrapping;
+        // texture.wrapT = THREE.RepeatWrapping;
+        // texture.repeat.set(2, 2);
+        // var skyboxGeo = new THREE.SphereGeometry(100, 32, 32);
+        // var skyboxMat = new THREE.MeshBasicMaterial({
+        //     side: THREE.BackSide,
+        //     map: texture
+        // });
+        // var skybox = new THREE.Mesh(skyboxGeo, skyboxMat);
+        // skybox.name = 'skybox';
+        // scene.add(skybox);
     }
+
+    var search = (function () {
+
+        var x = new THREE.Vector3();
+        var y = new THREE.Vector3();
+        var z = new THREE.Vector3();
+
+        return function () {
+            camera.matrixWorld.extractBasis(x, y, z);
+
+            var ray = new THREE.Raycaster(player.position, z.negate());
+            var targets = emitter.pool.map(function (box, i) {
+                return box.mesh;
+            });
+            var objects = ray.intersectObjects(targets);
+
+            if (objects.length === 0) {
+                return;
+            }
+
+            debugger;
+        }
+    }());
 
     /**
      * Update処理（メインループ)
@@ -102,6 +156,7 @@
 
         controls.update();
         emitter.update();
+        search();
         effect.render(scene, camera);
         // renderer.render(scene, camera);
     }
@@ -112,6 +167,8 @@
         setupRenderer();
         setupLight();
         setupObjects();
+        setupSkybox();
+        setupCursor();
 
         (function loop() {
             requestAnimationFrame(loop);

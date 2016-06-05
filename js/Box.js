@@ -19,12 +19,12 @@
         this.angularVelocity = angularVelocity.clone();
         this.velocity        = 0;
         this.limit           = 30;
-        this.gravity         = 9.8 / 2;
+        this.gravity         = 9.8 / 20;
 
         this.position.copy(position);
 
-        var mesh = this.makeMesh();
-        this.add(mesh);
+        this.mesh = this.makeMesh();
+        this.add(this.mesh);
     }
     Box.prototype = Object.create(THREE.Object3D.prototype);
     Box.prototype.constructor = Box;
