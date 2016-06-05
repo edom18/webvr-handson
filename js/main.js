@@ -5,6 +5,9 @@
     var camera, scene, renderer, light, ambientLight,
         player, effect, controls, emitter;
 
+    /**
+     * カメラのセットアップ
+     */
     function setupCamera() {
         player = new THREE.Object3D();
         player.name = 'player';
@@ -18,10 +21,17 @@
         scene.add(player);
     }
 
+    /**
+     * シーンのセットアップ
+     */
     function setupScene() {
+        // Three.js inspectorでデバッグできるように`window`にExportしておく。
         window.scene = scene = new THREE.Scene();
     }
 
+    /**
+     * レンダラーのセットアップ
+     */
     function setupRenderer() {
         renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -46,6 +56,9 @@
         document.body.appendChild(renderer.domElement);
     }
 
+    /**
+     * ライトのセットアップ
+     */
     function setupLight() {
         light = new THREE.DirectionalLight(0xffffff);
         light.position.set(0, -3, 4);
@@ -55,9 +68,18 @@
         scene.add(ambientLight);
     }
 
+    /**
+     * Boxのエミッターのセットアップ
+     */
     function setupObjects() {
         emitter = new Emitter(scene);
 
+    }
+
+    /**
+     * スカイボックスのセットアップ
+     */
+    function setupSkybox() {
         var texture = new THREE.TextureLoader().load('img/background.jpg');
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
@@ -72,13 +94,16 @@
         scene.add(skybox);
     }
 
+    /**
+     * Update処理（メインループ)
+     */
     function update() {
-        // renderer.render(scene, camera);
         Time.update();
 
         controls.update();
         emitter.update();
         effect.render(scene, camera);
+        // renderer.render(scene, camera);
     }
 
     function main() {
