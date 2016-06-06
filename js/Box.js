@@ -28,6 +28,9 @@
     }
     Box.prototype = Object.create(THREE.Object3D.prototype);
     Box.prototype.constructor = Box;
+    Box.prototype.isDestroyed = false;
+    Box.prototype.time = 0;
+    Box.prototype.duration = 1.0;
 
     /**
      * メッシュを生成
@@ -36,7 +39,8 @@
 
         var geometry = new THREE.BoxGeometry(1, 1, 1);
         var material = new THREE.MeshLambertMaterial({
-            color: 0xffffff
+            color: 0xffffff,
+            transparent: true
         });
 
         var mesh = new THREE.Mesh(geometry, material);
@@ -45,20 +49,58 @@
     };
 
     /**
+     * Destroy this box.
+     */
+    Box.prototype.destroy = function () {
+        this.isDestroyed = true;
+    };
+
+    /**
      * Update
      */
     Box.prototype.update = function () {
+
+        var t = Time.deltaTime / 1000;
+
+        if (this.isDestroyed) {
+            this.destroying(t);
+        }
+        else {
+            this.move(t);
+        }
+    };
+
+    /**
+     * Destroy the box.
+     */
+    Box.prototype.destroying = function (t) {
+        this.time += t;
+
+        var opacity = 1.0 - (this.time / this.duration);
+        this.mesh.material.opacity = opacity;
+
+        if (this.time >= this.duration) {
+            this.dispatchEvent({
+                type: 'onDestroy'
+            });
+        }
+    };
+
+    /**
+     * Move the box.
+     */
+    Box.prototype.move = function (t) {
+
         this.rotation.x += this.angularVelocity.x;
         this.rotation.y += this.angularVelocity.y;
         this.rotation.z += this.angularVelocity.z;
 
-        var t = Time.deltaTime / 1000;
         this.velocity += (this.gravity * t * t);
         this.position.y -= this.velocity;
 
         if (this.position.y <= -this.limit) {
             this.dispatchEvent({
-                type: 'onBottom'
+                type: 'onDestroy'
             });
         }
     };

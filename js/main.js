@@ -111,18 +111,6 @@
         var skybox = new THREE.Mesh(skyboxGeo, skyMaterial);
         skybox.name = 'skybox';
         scene.add(skybox);
-
-        // texture.wrapS = THREE.RepeatWrapping;
-        // texture.wrapT = THREE.RepeatWrapping;
-        // texture.repeat.set(2, 2);
-        // var skyboxGeo = new THREE.SphereGeometry(100, 32, 32);
-        // var skyboxMat = new THREE.MeshBasicMaterial({
-        //     side: THREE.BackSide,
-        //     map: texture
-        // });
-        // var skybox = new THREE.Mesh(skyboxGeo, skyboxMat);
-        // skybox.name = 'skybox';
-        // scene.add(skybox);
     }
 
     var search = (function () {
@@ -138,13 +126,15 @@
             var targets = emitter.pool.map(function (box, i) {
                 return box.mesh;
             });
+
             var objects = ray.intersectObjects(targets);
 
             if (objects.length === 0) {
                 return;
             }
 
-            debugger;
+            var box = objects[0].object.parent;
+            box.destroy();
         }
     }());
 

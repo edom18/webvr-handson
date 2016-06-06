@@ -38,7 +38,7 @@
             var box = new Box(position, velocity);
 
             var scope = this;
-            box.addEventListener('onBottom', function (evt) {
+            box.addEventListener('onDestroy', function (evt) {
                 scope.remove(box);
                 box = null;
             });
