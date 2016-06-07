@@ -231,6 +231,8 @@
     function update() {
         Time.update();
 
+        backBtn.rotation.y -= 0.01;
+
         controls.update();
         search();
         effect.render(scene, camera);
