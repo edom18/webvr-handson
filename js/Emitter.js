@@ -53,6 +53,10 @@
                 scope.remove(box);
                 box = null;
             });
+            box.addEventListener('onFall', function (evt) {
+                scope.remove(box);
+                box = null;
+            });
 
             this.add(box);
         },
@@ -101,7 +105,7 @@
          * @return {THREE.Vector3}
          */
         randomPosition: function () {
-            var x = (Math.random() * 2 - 1) * 3;
+            var x = (Math.random() * 2 - 1) * 10;
             var y = Math.random() * 5 + 5;
             var z = Math.random() * 3;
             return new THREE.Vector3(x, y, z);

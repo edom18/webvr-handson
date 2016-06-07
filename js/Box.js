@@ -19,7 +19,7 @@
         this.angularVelocity = angularVelocity.clone();
         this.velocity        = 0;
         this.limit           = 30;
-        this.gravity         = 9.8 / 20;
+        this.gravity         = 9.8;
 
         this.position.copy(position);
 
@@ -100,7 +100,7 @@
 
         if (this.position.y <= -this.limit) {
             this.dispatchEvent({
-                type: 'onDestroy'
+                type: 'onFall'
             });
         }
     };
