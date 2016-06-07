@@ -72,7 +72,7 @@
      * Boxのエミッターのセットアップ
      */
     function setupObjects() {
-        emitter = new Emitter(scene);
+        emitter = new Emitter(scene, 1000);
     }
 
     /**

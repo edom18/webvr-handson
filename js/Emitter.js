@@ -6,13 +6,14 @@
      * エミッター
      *
      * @param {THREE.Scene} scene
+     * @param {number} interval to emit
      */
-    function Emitter(scene) {
+    function Emitter(scene, interval) {
         this.pool = [];
         this.scene = scene;
 
         this.time = 0;
-        this.interval = 5000;
+        this.interval = interval || 5000;
         this.nextTime = this.interval;
 
         this.score = 0;
@@ -21,6 +22,9 @@
     Emitter.prototype = {
         constructor: Emitter,
 
+        /**
+         * 更新処理
+         */
         update: function () {
             this.time += Time.deltaTime;
 
@@ -34,6 +38,9 @@
             });
         },
 
+        /**
+         * BoxをEmit
+         */
         emit: function () {
             var position = this.randomPosition();
             var velocity = this.randomVelocity();
@@ -50,11 +57,19 @@
             this.add(box);
         },
 
+        /**
+         * スコアを加算
+         */
         addScore: function () {
             this.score++;
             this.logElement.innerHTML = this.score;
         },
 
+        /**
+         * Boxを追加
+         *
+         * @param {Box} obj
+         */
         add: function (obj) {
             if (~this.pool.indexOf(obj)) {
                 return;
@@ -64,6 +79,11 @@
             this.pool.push(obj);
         },
 
+        /**
+         * Boxを削除
+         *
+         * @param {Box} obj
+         */
         remove: function (obj) {
             if (!~this.pool.indexOf(obj)) {
                 return;
@@ -75,6 +95,11 @@
             this.scene.remove(obj);
         },
 
+        /**
+         * ランダムなポジションを生成
+         *
+         * @return {THREE.Vector3}
+         */
         randomPosition: function () {
             var x = (Math.random() * 2 - 1) * 3;
             var y = Math.random() * 5 + 5;
@@ -82,6 +107,11 @@
             return new THREE.Vector3(x, y, z);
         },
 
+        /**
+         * ランダムな回転速度を生成
+         *
+         * @return {THREE.Vector3}
+         */
         randomVelocity: function () {
             var x = Math.random() * 0.1;
             var y = Math.random() * 0.1;
