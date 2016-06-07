@@ -52,7 +52,7 @@ WebVRConfig = {
 <script src="js/Time.js"></script>
 <script src="js/Emitter.js"></script>
 <script src="js/Box.js"></script>
-<script src="js/main.js"></script>
+<!-- <script src="js/main.js"></script> -->
 
 <style>
 body, div {
@@ -79,6 +79,23 @@ canvas {
 <body>
 
     <p class="scoreView"><span>0</span></p>
+
+<script>
+(function () {
+    'use strict';
+
+    var query = location.search.slice(1);
+
+    function loadScript(fileName) {
+        fileName = fileName || 'main';
+        var script = document.createElement('script');
+        script.src = 'js/' + fileName + '.js';
+        document.head.appendChild(script);
+    }
+
+    loadScript(query);
+}());
+</script>
 
 </body>
 </html>
