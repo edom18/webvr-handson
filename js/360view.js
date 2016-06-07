@@ -107,9 +107,11 @@
         sphere360view3.name = '360view3';
         scene.add(sphere360view3);
 
+        var texture = new THREE.TextureLoader().load('img/img_backbtn.png');
         var backBtnGeo = new THREE.BoxGeometry(1, 1, 1);
         var backBtnMat = new THREE.MeshBasicMaterial({
-            color: 0x0000aa
+            color: 0xffffff,
+            map: texture
         });
 
         backBtn = new THREE.Mesh(backBtnGeo, backBtnMat);
