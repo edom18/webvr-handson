@@ -167,6 +167,6 @@
         }());
     }
 
-    document.addEventListener('DOMContentLoaded', main ,false);
+    main();
 
 }(window));
