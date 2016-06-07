@@ -14,6 +14,9 @@
         this.time = 0;
         this.interval = 5000;
         this.nextTime = this.interval;
+
+        this.score = 0;
+        this.logElement = document.querySelector('.scoreView span');
     }
     Emitter.prototype = {
         constructor: Emitter,
@@ -39,11 +42,17 @@
 
             var scope = this;
             box.addEventListener('onDestroy', function (evt) {
+                scope.addScore();
                 scope.remove(box);
                 box = null;
             });
 
             this.add(box);
+        },
+
+        addScore: function () {
+            this.score++;
+            this.logElement.innerHTML = this.score;
         },
 
         add: function (obj) {
