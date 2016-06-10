@@ -3,9 +3,7 @@
     'use strict';
 
     var camera, scene, renderer, light, ambientLight,
-        player, effect, controls, backBtn;
-
-    var sphere360view1, sphere360view2, sphere360view3;
+        player, effect, controls, emitter;
 
     /**
      * カメラのセットアップ
@@ -71,53 +69,10 @@
     }
 
     /**
-     *
-     */
-    function createSphere() {
-        var geo = new THREE.SphereGeometry(1.5, 64, 64);
-        var texture = new THREE.TextureLoader().load('img/360view.jpg');
-        var mat = new THREE.MeshBasicMaterial({
-            map: texture,
-            side: THREE.BackSide
-        });
-        var mesh = new THREE.Mesh(geo, mat);
-
-        return mesh;
-    }
-
-    /**
-     * 360viewをセットアップ
+     * Boxのエミッターのセットアップ
      */
     function setupObjects() {
-
-        sphere360view1 = createSphere();
-        sphere360view1.position.y = -3;
-        sphere360view1.name = '360view1';
-        scene.add(sphere360view1);
-
-        sphere360view2 = createSphere();
-        sphere360view2.position.y = -3;
-        sphere360view2.position.x = -4;
-        sphere360view2.name = '360view2';
-        scene.add(sphere360view2);
-
-        sphere360view3 = createSphere();
-        sphere360view3.position.y = -3;
-        sphere360view3.position.x =  4;
-        sphere360view3.name = '360view3';
-        scene.add(sphere360view3);
-
-        var texture = new THREE.TextureLoader().load('img/img_backbtn.png');
-        var backBtnGeo = new THREE.BoxGeometry(1, 1, 1);
-        var backBtnMat = new THREE.MeshBasicMaterial({
-            color: 0xffffff,
-            map: texture
-        });
-
-        backBtn = new THREE.Mesh(backBtnGeo, backBtnMat);
-        backBtn.position.y = 2;
-        backBtn.visible = false;
-        scene.add(backBtn);
+        emitter = new Emitter(scene, 1000);
     }
 
     /**
@@ -164,64 +119,22 @@
         var y = new THREE.Vector3();
         var z = new THREE.Vector3();
 
-        var previous = null;
-
-        // TODO: あとで時間制限については見直す
-        var time = 0;
-
         return function () {
-            // カメラの「前方向」を取得
             camera.matrixWorld.extractBasis(x, y, z);
 
             var ray = new THREE.Raycaster(player.position, z.negate());
+            var targets = emitter.pool.map(function (box, i) {
+                return box.mesh;
+            });
 
-            var objects = ray.intersectObjects([sphere360view1, sphere360view2, sphere360view3,  backBtn]);
-
-            time += Time.deltaTime;
-
-            if (time < 2) {
-                return;
-            }
+            var objects = ray.intersectObjects(targets);
 
             if (objects.length === 0) {
-                previous = null;
                 return;
             }
 
-            var target = objects[0].object;
-            if (previous === target) {
-                return;
-            }
-
-            if (target === sphere360view1) {
-                target.scale.set(10, 10, 10);
-
-                sphere360view2.scale.set(1, 1, 1);
-                sphere360view3.scale.set(1, 1, 1);
-                backBtn.visible = true;
-            }
-            else if (target === sphere360view2) {
-                target.scale.set(10, 10, 10);
-
-                sphere360view1.scale.set(1, 1, 1);
-                sphere360view3.scale.set(1, 1, 1);
-                backBtn.visible = true;
-            }
-            else if (target === sphere360view3) {
-                target.scale.set(10, 10, 10);
-
-                sphere360view1.scale.set(1, 1, 1);
-                sphere360view2.scale.set(1, 1, 1);
-                backBtn.visible = true;
-            }
-            else if (target === backBtn) {
-                sphere360view1.scale.set(1, 1, 1);
-                sphere360view2.scale.set(1, 1, 1);
-                sphere360view3.scale.set(1, 1, 1);
-                backBtn.visible = false;
-            }
-
-            previous = target;
+            var box = objects[0].object.parent;
+            box.destroy();
         }
     }());
 
@@ -231,9 +144,8 @@
     function update() {
         Time.update();
 
-        backBtn.rotation.y -= 0.01;
-
         controls.update();
+        emitter.update();
         search();
         effect.render(scene, camera);
         // renderer.render(scene, camera);
