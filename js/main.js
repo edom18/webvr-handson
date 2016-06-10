@@ -5,7 +5,7 @@
     var camera, scene, renderer, light, ambientLight,
         player, effect, controls, backBtn;
 
-    var sphere360view1, sphere360view2, sphere360view3;
+    var sphere360view1, sphere360view2;
 
     /**
      * カメラのセットアップ
@@ -73,9 +73,9 @@
     /**
      *
      */
-    function createSphere() {
+    function createSphere(url) {
         var geo = new THREE.SphereGeometry(1.5, 64, 64);
-        var texture = new THREE.TextureLoader().load('img/360view.jpg');
+        var texture = new THREE.TextureLoader().load(url);
         var mat = new THREE.MeshBasicMaterial({
             map: texture,
             side: THREE.BackSide
@@ -90,22 +90,17 @@
      */
     function setupObjects() {
 
-        sphere360view1 = createSphere();
+        sphere360view1 = createSphere('img/360view.jpg');
         sphere360view1.position.y = -3;
+        sphere360view1.position.x =  2;
         sphere360view1.name = '360view1';
         scene.add(sphere360view1);
 
-        sphere360view2 = createSphere();
+        sphere360view2 = createSphere('img/360view2.jpg');
         sphere360view2.position.y = -3;
-        sphere360view2.position.x = -4;
+        sphere360view2.position.x = -2;
         sphere360view2.name = '360view2';
         scene.add(sphere360view2);
-
-        sphere360view3 = createSphere();
-        sphere360view3.position.y = -3;
-        sphere360view3.position.x =  4;
-        sphere360view3.name = '360view3';
-        scene.add(sphere360view3);
 
         var texture = new THREE.TextureLoader().load('img/img_backbtn.png');
         var backBtnGeo = new THREE.BoxGeometry(1, 1, 1);
@@ -175,7 +170,7 @@
 
             var ray = new THREE.Raycaster(player.position, z.negate());
 
-            var objects = ray.intersectObjects([sphere360view1, sphere360view2, sphere360view3,  backBtn]);
+            var objects = ray.intersectObjects([sphere360view1, sphere360view2, backBtn]);
 
             time += Time.deltaTime;
 
@@ -197,27 +192,17 @@
                 target.scale.set(10, 10, 10);
 
                 sphere360view2.scale.set(1, 1, 1);
-                sphere360view3.scale.set(1, 1, 1);
                 backBtn.visible = true;
             }
             else if (target === sphere360view2) {
                 target.scale.set(10, 10, 10);
 
                 sphere360view1.scale.set(1, 1, 1);
-                sphere360view3.scale.set(1, 1, 1);
-                backBtn.visible = true;
-            }
-            else if (target === sphere360view3) {
-                target.scale.set(10, 10, 10);
-
-                sphere360view1.scale.set(1, 1, 1);
-                sphere360view2.scale.set(1, 1, 1);
                 backBtn.visible = true;
             }
             else if (target === backBtn) {
                 sphere360view1.scale.set(1, 1, 1);
                 sphere360view2.scale.set(1, 1, 1);
-                sphere360view3.scale.set(1, 1, 1);
                 backBtn.visible = false;
             }
 
