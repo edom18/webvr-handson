@@ -161,10 +161,15 @@
 
         var previous = null;
 
-        // TODO: あとで時間制限については見直す
         var time = 0;
 
         return function () {
+
+            if (time < 100) {
+                time += Time.deltaTime;
+                return;
+            }
+
             // カメラの「前方向」を取得
             camera.matrixWorld.extractBasis(x, y, z);
 
@@ -172,11 +177,6 @@
 
             var objects = ray.intersectObjects([sphere360view1, sphere360view2, backBtn]);
 
-            time += Time.deltaTime;
-
-            if (time < 2) {
-                return;
-            }
 
             if (objects.length === 0) {
                 previous = null;
@@ -229,13 +229,12 @@
         setupCamera();
         setupRenderer();
         setupLight();
-        setupObjects();
         setupSkybox();
         setupCursor();
+        setupObjects();
 
         (function loop() {
             requestAnimationFrame(loop);
-
             update();
         }());
     }
