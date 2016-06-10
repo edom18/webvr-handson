@@ -80,9 +80,9 @@
         setupCamera();
         setupRenderer();
         setupLight();
-        setupObjects();
         setupSkybox();
         setupCursor();
+        setupObjects();
 
         (function loop() {
             requestAnimationFrame(loop);
