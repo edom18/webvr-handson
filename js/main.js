@@ -177,7 +177,6 @@
 
             var objects = ray.intersectObjects([sphere360view1, sphere360view2, backBtn]);
 
-
             if (objects.length === 0) {
                 previous = null;
                 return;
