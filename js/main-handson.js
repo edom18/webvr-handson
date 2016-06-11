@@ -39,7 +39,7 @@
     /**
      *
      */
-    function createSphere() {
+    function createSphere(url) {
         //
     }
 
