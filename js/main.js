@@ -15,7 +15,7 @@
         player.name = 'player';
         player.position.set(0, 1.4, 10);
 
-        camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100000);
         player.add(camera);
 
         controls = new THREE.VRControls(camera);
@@ -156,7 +156,7 @@
                 side: THREE.BackSide
             });
 
-            var s = 1000;
+            var s = 50000;
             var mesh = new THREE.Mesh(new THREE.BoxGeometry(s, s, s), material);
             scene.add(mesh);
         });
@@ -196,14 +196,15 @@
                 return;
             }
 
+            var s = 10000;
             if (target === sphere360view1) {
-                target.scale.set(10, 10, 10);
+                target.scale.set(s, s, s);
 
                 sphere360view2.scale.set(1, 1, 1);
                 backBtn.visible = true;
             }
             else if (target === sphere360view2) {
-                target.scale.set(10, 10, 10);
+                target.scale.set(s, s, s);
 
                 sphere360view1.scale.set(1, 1, 1);
                 backBtn.visible = true;
