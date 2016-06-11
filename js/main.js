@@ -135,22 +135,31 @@
      * スカイボックスのセットアップ
      */
     function setupSkybox() {
-        var texture = new THREE.TextureLoader().load('img/background.jpg');
+        var urls = [
+            'img/Vasa/posx.jpg',
+            'img/Vasa/negx.jpg',
+            'img/Vasa/posy.jpg',
+            'img/Vasa/negy.jpg',
+            'img/Vasa/posz.jpg',
+            'img/Vasa/negz.jpg',
+        ];
 
-        var s = 1000;
-        var skyboxGeo = new THREE.BoxGeometry(s, s, s);
-        var materialArray = [];
-        var mat = new THREE.MeshBasicMaterial({
-            map: texture,
-            side: THREE.BackSide
+        // Fixed warning that `there is no texture bound to the unit 0`
+        new THREE.CubeTextureLoader().load(urls, function (texture) {
+            texture.mapping = THREE.CubeRefractionMapping;
+            var shader = THREE.ShaderLib['cube'];
+            shader.uniforms['tCube'].value = texture;
+            var material = new THREE.ShaderMaterial({
+                fragmentShader: shader.fragmentShader,
+                vertexShader: shader.vertexShader,
+                uniforms: shader.uniforms,
+                side: THREE.BackSide
+            });
+
+            var s = 1000;
+            var mesh = new THREE.Mesh(new THREE.BoxGeometry(s, s, s), material);
+            scene.add(mesh);
         });
-        for (var i = 0; i < 6; i++) {
-            materialArray.push(mat);
-        }
-        var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
-        var skybox = new THREE.Mesh(skyboxGeo, skyMaterial);
-        skybox.name = 'skybox';
-        scene.add(skybox);
     }
 
     var search = (function () {
