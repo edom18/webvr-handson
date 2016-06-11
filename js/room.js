@@ -7,6 +7,21 @@
 
     var room;
 
+    var btn1, btn2, btn3;
+
+
+    function createButton() {
+        var s = 0.1;
+        var geo = new THREE.BoxGeometry(s, s, s);
+        var mat = new THREE.MeshLambertMaterial({
+            color: 0x2222ff
+        });
+
+        var mesh = new THREE.Mesh(geo, mat);
+
+        return mesh;
+    }
+
     function createRoom() {
 
         var size = 10;
@@ -86,7 +101,7 @@
     function setupCamera() {
         player = new THREE.Object3D();
         player.name = 'player';
-        player.position.set(0, 1.4, 10);
+        player.position.set(0, 1.4, 0);
 
         camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100000);
         player.add(camera);
@@ -148,8 +163,23 @@
      */
     function setupObjects() {
         var room = createRoom();
-        room.position.z = 10;
+        room.name = 'room';
         scene.add(room);
+
+        btn1 = createButton();
+        btn1.name = 'button1';
+        btn1.position.set(1, 1, -3);
+        scene.add(btn1);
+
+        btn2 = createButton();
+        btn2.name = 'button2';
+        btn2.position.set(2, 1, 1);
+        scene.add(btn2);
+
+        btn3 = createButton();
+        btn3.name = 'button3';
+        btn3.position.set(-1.5, 1, 2);
+        scene.add(btn3);
     }
 
     /**
@@ -190,7 +220,7 @@
 
             var ray = new THREE.Raycaster(player.position, z.negate());
 
-            var objects = ray.intersectObjects();
+            var objects = ray.intersectObjects([btn1, btn2, btn3]);
 
             if (objects.length === 0) {
                 previous = null;
@@ -201,6 +231,9 @@
             if (previous === target) {
                 return;
             }
+
+            player.position.x = target.position.x;
+            player.position.z = target.position.z;
 
             previous = target;
         };
@@ -213,7 +246,7 @@
         Time.update();
 
         controls.update();
-        // search();
+        search();
         effect.render(scene, camera);
         // renderer.render(scene, camera);
     }
